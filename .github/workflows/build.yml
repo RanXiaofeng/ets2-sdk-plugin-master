@@ -15,7 +15,6 @@ on:
 env:
   BUILD_TYPE: Release
   VCPKG_DEFAULT_TRIPLET: x64-windows
-  VCPKG_COMMIT_ID: c9c7bdbd8f900a5ab1f26f87e23bb8768f78330a
 
 jobs:
   build:
@@ -29,18 +28,16 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.1
 
-    - name: Setup vcpkg
-      uses: lukka/run-vcpkg@v11
-      with:
-        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-        vcpkgGitCommitId: '${{ env.VCPKG_COMMIT_ID }}'
-        runVcpkgInstall: true
+    - name: Install vcpkg
+      uses: friendlyanon/setup-vcpkg@v1
+      with: 
+        committish: 2024.02.14
 
     - name: Configure CMake
       run: |
         cmake -B ${{github.workspace}}/build `
           -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} `
-          -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake `
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake `
           -DVCPKG_TARGET_TRIPLET=${{env.VCPKG_DEFAULT_TRIPLET}}
 
     - name: Build

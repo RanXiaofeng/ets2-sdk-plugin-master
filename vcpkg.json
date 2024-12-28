@@ -3,8 +3,12 @@
     "name": "ets2-telemetry-plugin",
     "version": "1.0.0",
     "dependencies": [
-        "cpp-httplib",
-        "nlohmann-json"
+        {
+            "name": "cpp-httplib"
+        },
+        {
+            "name": "nlohmann-json"
+        }
     ],
-    "builtin-baseline": "c9c7bdbd8f900a5ab1f26f87e23bb8768f78330a"
+    "builtin-baseline": "2024.02.14"
 } 
