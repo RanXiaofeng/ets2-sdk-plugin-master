@@ -1,49 +1,32 @@
-#ifndef SHAREDMEMORY_HPP
-#define SHAREDMEMORY_HPP
+#pragma once
 #include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "ets2-telemetry-common.hpp"
-
-#undef SHAREDMEM_LOGGING
-#if ETS2_PLUGIN_LOGGING_ON == 1
-	#if ETS2_PLUGIN_LOGGING_SHAREDMEMORY == 1
-		#define SHAREDMEM_FILENAME ETS2_PLUGIN_FILENAME_PREFIX "sharedmem.txt"
-		#define SHAREDMEM_LOGGING 1
-	#endif
-#endif
 
 class SharedMemory
 {
-protected:
-
-        LPCWSTR namePtr;
-        int mapsize;
-
-		// MMF specifics
-        HANDLE hMapFile;
-        void* pBufferPtr;
-
-		// Status about hook
-        bool isSharedMemoryHooked;
-
-		// Logging
-#ifdef SHAREDMEM_LOGGING
-		FILE *logFilePtr;
-#endif
-
-        void LogError(const char* logPtr);
-
 public:
-        bool Hooked() { return isSharedMemoryHooked; }
-        void* GetBuffer() { return pBufferPtr; }
+    static SharedMemory& getInstance() {
+        static SharedMemory instance;
+        return instance;
+    }
 
-        SharedMemory(LPCWSTR mapPtr, unsigned int size);
-        void Close();
+    SharedMemory();
+    ~SharedMemory();
 
-		void* getPtrAt(int offset) { return (void*) &(((unsigned char*)pBufferPtr)[offset]); }
+    bool Create(LPWSTR name, unsigned int size);
+    bool Open(LPWSTR name, unsigned int size);
+    void Close();
+    bool Hooked();
+    void* GetBuffer();
+    ets2TelemetryMap_s* getTelemetryData() {
+        return static_cast<ets2TelemetryMap_s*>(GetBuffer());
+    }
 
+private:
+    HANDLE hMapFile;
+    void* pBuffer;
+    bool hooked;
 
+    // 禁止拷贝和赋值
+    SharedMemory(const SharedMemory&) = delete;
+    SharedMemory& operator=(const SharedMemory&) = delete;
 };
-
-#endif
