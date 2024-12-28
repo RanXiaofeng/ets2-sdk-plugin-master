@@ -2,11 +2,15 @@ name: Build ETS2 Telemetry Plugin
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
   pull_request:
-    branches: [ main, master ]
-  tags:
-    - 'v*'
+    branches:
+      - main
+      - master
 
 env:
   BUILD_TYPE: Release
@@ -59,7 +63,7 @@ jobs:
         path: release/
 
     - name: Create Release
-      if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v1
       with:
         files: release/*
