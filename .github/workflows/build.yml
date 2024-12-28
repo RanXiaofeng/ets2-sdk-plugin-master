@@ -49,8 +49,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        .\vcpkg\vcpkg.exe install cpp-httplib:${{ env.VCPKG_DEFAULT_TRIPLET }}
-        .\vcpkg\vcpkg.exe install nlohmann-json:${{ env.VCPKG_DEFAULT_TRIPLET }}
+        .\vcpkg\vcpkg.exe install --triplet ${{ env.VCPKG_DEFAULT_TRIPLET }}
 
     - name: Configure CMake
       run: |
