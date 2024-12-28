@@ -15,6 +15,7 @@ on:
 env:
   BUILD_TYPE: Release
   VCPKG_DEFAULT_TRIPLET: x64-windows
+  VCPKG_COMMIT_ID: c9c7bdbd8f900a5ab1f26f87e23bb8768f78330a
 
 jobs:
   build:
@@ -32,6 +33,7 @@ jobs:
       uses: lukka/run-vcpkg@v11
       with:
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+        vcpkgGitCommitId: '${{ env.VCPKG_COMMIT_ID }}'
         runVcpkgInstall: true
 
     - name: Configure CMake

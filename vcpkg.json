@@ -5,5 +5,6 @@
     "dependencies": [
         "cpp-httplib",
         "nlohmann-json"
-    ]
+    ],
+    "builtin-baseline": "c9c7bdbd8f900a5ab1f26f87e23bb8768f78330a"
 } 
