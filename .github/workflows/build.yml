@@ -16,10 +16,20 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install vcpkg
+    - name: Cache vcpkg
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{github.workspace}}/vcpkg
+          !${{github.workspace}}/vcpkg/buildtrees
+          !${{github.workspace}}/vcpkg/packages
+          !${{github.workspace}}/vcpkg/downloads
+        key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+
+    - name: Setup vcpkg
       uses: lukka/run-vcpkg@v7
       with:
-        vcpkgGitCommitId: '2023.11.20'
+        vcpkgGitCommitId: 501db0f17ef6df184fcdbfbe0f87cde2313b6ab1
         setupOnly: true
 
     - name: Install dependencies
@@ -48,4 +58,12 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ets2-telemetry-plugin
-        path: release/ 
+        path: release/
+
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: release/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
