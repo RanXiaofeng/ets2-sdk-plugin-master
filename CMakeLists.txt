@@ -1,9 +1,19 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.20)
+
+# 启用 vcpkg 清单模式
+set(VCPKG_MANIFEST_MODE ON)
+set(VCPKG_MANIFEST_INSTALL ON)
+
 project(ets2-telemetry-plugin VERSION 1.0.0)
 
 # 设置 C++ 标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Windows 特定设置
+if(WIN32)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 
 # 查找依赖包
 find_package(httplib CONFIG REQUIRED)
