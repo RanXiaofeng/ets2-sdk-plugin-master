@@ -9,8 +9,8 @@ SharedMemory::~SharedMemory() {
     Close();
 }
 
-bool SharedMemory::Create(LPWSTR name, unsigned int size) {
-    hMapFile = CreateFileMapping(
+bool SharedMemory::Create(LPCWSTR name, unsigned int size) {
+    hMapFile = CreateFileMappingW(
         INVALID_HANDLE_VALUE,
         NULL,
         PAGE_READWRITE,
@@ -35,12 +35,13 @@ bool SharedMemory::Create(LPWSTR name, unsigned int size) {
         return false;
     }
 
+    ZeroMemory(pBuffer, size);
     hooked = true;
     return true;
 }
 
-bool SharedMemory::Open(LPWSTR name, unsigned int size) {
-    hMapFile = OpenFileMapping(
+bool SharedMemory::Open(LPCWSTR name, unsigned int size) {
+    hMapFile = OpenFileMappingW(
         FILE_MAP_ALL_ACCESS,
         FALSE,
         name);

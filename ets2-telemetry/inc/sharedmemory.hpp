@@ -1,5 +1,6 @@
 #pragma once
 #include <windows.h>
+#include "ets2-telemetry-common.hpp"
 
 class SharedMemory
 {
@@ -12,8 +13,8 @@ public:
     SharedMemory();
     ~SharedMemory();
 
-    bool Create(LPWSTR name, unsigned int size);
-    bool Open(LPWSTR name, unsigned int size);
+    bool Create(LPCWSTR name, unsigned int size);
+    bool Open(LPCWSTR name, unsigned int size);
     void Close();
     bool Hooked();
     void* GetBuffer();

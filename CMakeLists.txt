@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Windows 特定设置
 if(WIN32)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    add_definitions(-DWIN32_LEAN_AND_MEAN -DNOMINMAX -D_WIN32_WINNT=0x0601)
 endif()
 
 # 查找依赖包
@@ -31,6 +32,8 @@ set(SOURCES
 include_directories(
     ${PROJECT_SOURCE_DIR}/ets2-telemetry/inc
     ${PROJECT_SOURCE_DIR}/scs_sdk_1_5
+    ${PROJECT_SOURCE_DIR}/scs_sdk_1_5/include
+    ${PROJECT_SOURCE_DIR}/scs_sdk_1_5/include/eurotrucks2
 )
 
 # 创建动态库目标
@@ -42,15 +45,6 @@ target_link_libraries(${PROJECT_NAME}
     httplib::httplib
     nlohmann_json::nlohmann_json
 )
-
-# Windows 特定设置
-if(WIN32)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE 
-        WIN32_LEAN_AND_MEAN 
-        NOMINMAX
-        _WIN32_WINNT=0x0601
-    )
-endif()
 
 # 安装规则
 install(TARGETS ${PROJECT_NAME}
