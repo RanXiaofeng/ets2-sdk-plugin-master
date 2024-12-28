@@ -29,14 +29,28 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.1
 
-    - name: Restore vcpkg and dependencies
-      uses: lukka/run-vcpkg@v7
+    - name: Cache vcpkg
+      uses: actions/cache@v3
       with:
-        vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
-        setupOnly: false
-        vcpkgTriplet: ${{ env.VCPKG_DEFAULT_TRIPLET }}
-        additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
-        appendedCacheKey: ${{ hashFiles('vcpkg.json') }}
+        path: |
+          ${{github.workspace}}/vcpkg
+          !${{github.workspace}}/vcpkg/buildtrees
+          !${{github.workspace}}/vcpkg/packages
+          !${{github.workspace}}/vcpkg/downloads
+        key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+
+    - name: Install vcpkg
+      run: |
+        git clone https://github.com/Microsoft/vcpkg.git
+        cd vcpkg
+        git checkout ${{ env.VCPKG_COMMIT_ID }}
+        .\bootstrap-vcpkg.bat
+        .\vcpkg.exe integrate install
+
+    - name: Install dependencies
+      run: |
+        .\vcpkg\vcpkg.exe install cpp-httplib:${{ env.VCPKG_DEFAULT_TRIPLET }}
+        .\vcpkg\vcpkg.exe install nlohmann-json:${{ env.VCPKG_DEFAULT_TRIPLET }}
 
     - name: Configure CMake
       run: |
