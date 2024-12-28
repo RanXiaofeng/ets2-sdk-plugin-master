@@ -1,0 +1,17 @@
+{
+    "web_api": {
+        "port": 8111,
+        "cors": {
+            "enabled": true,
+            "allowed_origins": ["*"]
+        },
+        "security": {
+            "api_key_required": false,
+            "api_key": ""
+        },
+        "rate_limit": {
+            "enabled": true,
+            "requests_per_minute": 60
+        }
+    }
+} 

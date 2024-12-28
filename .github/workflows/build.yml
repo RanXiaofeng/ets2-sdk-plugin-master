@@ -1,0 +1,51 @@
+name: Build ETS2 Telemetry Plugin
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install vcpkg
+      uses: lukka/run-vcpkg@v7
+      with:
+        vcpkgGitCommitId: '2023.11.20'
+        setupOnly: true
+
+    - name: Install dependencies
+      run: |
+        vcpkg install cpp-httplib:x64-windows
+        vcpkg install nlohmann-json:x64-windows
+        vcpkg integrate install
+
+    - name: Configure CMake
+      run: |
+        cmake -B ${{github.workspace}}/build `
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} `
+          -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Create Release Package
+      run: |
+        mkdir release
+        copy ${{github.workspace}}/build/Release/*.dll release/
+        copy ${{github.workspace}}/README.md release/
+        copy ${{github.workspace}}/LICENSE release/
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ets2-telemetry-plugin
+        path: release/ 
